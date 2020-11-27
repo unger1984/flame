@@ -1,6 +1,7 @@
 import 'package:flame/effects/move_effect.dart';
 import 'package:flame/effects/scale_effect.dart';
 import 'package:flame/effects/rotate_effect.dart';
+import 'package:flame/game/game_widget.dart';
 import 'package:flame/gestures.dart';
 import 'package:flame/extensions/vector2.dart';
 import 'package:flame/flame.dart';
@@ -14,7 +15,11 @@ import './square.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Flame.util.fullScreen();
-  runApp(MyGame().widget);
+  runApp(
+    GameWidget(
+      game: MyGame(),
+    ),
+  );
 }
 
 class MyGame extends BaseGame with TapDetector {
@@ -61,7 +66,8 @@ class MyGame extends BaseGame with TapDetector {
 
     orangeSquare.addEffect(RotateEffect(
       angle: (dx + dy) % (2 * pi),
-      speed: 1.0, // Radians per second
+      speed: 1.0,
+      // Radians per second
       curve: Curves.easeInOut,
       isInfinite: true,
       isAlternating: true,
