@@ -69,7 +69,7 @@ class Sprite {
   void render(
     Canvas canvas, {
     Vector2 size,
-    Paint overridePaint,
+    Paint? overridePaint,
   }) {
     size ??= srcSize;
     renderRect(canvas, size.toRect(), overridePaint: overridePaint);
@@ -96,7 +96,7 @@ class Sprite {
   void renderRect(
     Canvas canvas,
     Rect dst, {
-    Paint overridePaint,
+    Paint? overridePaint,
   }) {
     canvas.drawImageRect(image, src, dst, overridePaint ?? paint);
   }
