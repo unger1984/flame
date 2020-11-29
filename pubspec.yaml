@@ -21,9 +21,3 @@ environment:
 
 flutter:
   uses-material-design: false
-
-dependency_overrides:
-  ordered_set:
-    git:
-      url: git://github.com/lig/ordered_set.git
-      ref: null-safety

@@ -17,9 +17,3 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-dependency_overrides:
-  ordered_set:
-    git:
-      url: git://github.com/lig/ordered_set.git
-      ref: null-safety
