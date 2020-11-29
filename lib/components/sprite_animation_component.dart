@@ -7,15 +7,15 @@ import '../sprite_animation.dart';
 import 'position_component.dart';
 
 class SpriteAnimationComponent extends PositionComponent {
-  SpriteAnimation animation;
-  Paint overridePaint;
+  SpriteAnimation? animation;
+  Paint? overridePaint;
   bool removeOnFinish = false;
 
   SpriteAnimationComponent(
     Vector2 size,
-    this.animation, {
+    SpriteAnimation this.animation, {
     this.removeOnFinish = false,
-  }) : assert(animation != null) {
+  }) {
     super.size.setFrom(size);
   }
 
@@ -25,10 +25,10 @@ class SpriteAnimationComponent extends PositionComponent {
     Vector2 size,
     Image image,
     int amount, {
-    int amountPerRow,
-    Vector2 texturePosition,
-    @required double stepTime,
-    Vector2 textureSize,
+    int? amountPerRow,
+    Vector2? texturePosition,
+    required double stepTime,
+    required Vector2 textureSize,
     bool loop = true,
     this.removeOnFinish = false,
   }) {
@@ -39,7 +39,7 @@ class SpriteAnimationComponent extends PositionComponent {
       amountPerRow: amountPerRow,
       texturePosition: texturePosition,
       textureSize: textureSize,
-      stepTime: stepTime ?? 0.1,
+      stepTime: stepTime,
       loop: loop,
     );
   }
@@ -49,9 +49,9 @@ class SpriteAnimationComponent extends PositionComponent {
     Image image,
     int amount,
     List<double> stepTimes, {
-    int amountPerRow,
-    Vector2 texturePosition,
-    Vector2 textureSize,
+    int? amountPerRow,
+    Vector2? texturePosition,
+    required Vector2 textureSize,
     bool loop = true,
   }) {
     super.size.setFrom(size);
@@ -68,13 +68,16 @@ class SpriteAnimationComponent extends PositionComponent {
   }
 
   @override
-  bool get shouldRemove => removeOnFinish && animation.isLastFrame;
+  bool get shouldRemove => removeOnFinish && animation!.isLastFrame;
 
   @mustCallSuper
   @override
   void render(Canvas canvas) {
     super.render(canvas);
-    animation.getSprite().render(
+    if (animation == null) {
+      return;
+    }
+    animation!.getSprite().render(
           canvas,
           size: size,
           overridePaint: overridePaint,
@@ -84,6 +87,9 @@ class SpriteAnimationComponent extends PositionComponent {
   @override
   void update(double t) {
     super.update(t);
-    animation.update(t);
+    if (animation == null) {
+      return;
+    }
+    animation!.update(t);
   }
 }

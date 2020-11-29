@@ -66,9 +66,9 @@ class SpriteBatch {
 
   void render(
     Canvas canvas, {
-    BlendMode blendMode,
-    Rect cullRect,
-    Paint paint,
+    BlendMode? blendMode,
+    Rect? cullRect,
+    Paint? paint,
   }) {
     canvas.drawAtlas(
       atlas,
