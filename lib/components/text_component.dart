@@ -10,7 +10,7 @@ class TextComponent extends PositionComponent {
   String _text;
   TextConfig _config;
 
-  TextPainter _tp;
+  late TextPainter _tp;
 
   String get text => _text;
 
@@ -28,8 +28,8 @@ class TextComponent extends PositionComponent {
     _updateBox();
   }
 
-  TextComponent(this._text, {TextConfig config}) {
-    _config = config ?? TextConfig();
+  TextComponent(this._text, {TextConfig? config})
+      : _config = config ?? TextConfig() {
     _updateBox();
   }
 

@@ -11,8 +11,8 @@ export './scale_effect.dart';
 export './sequence_effect.dart';
 
 abstract class ComponentEffect<T extends Component> {
-  T component;
-  Function() onComplete;
+  T? component;
+  Function()? onComplete;
 
   bool _isDisposed = false;
   bool get isDisposed => _isDisposed;
@@ -29,9 +29,12 @@ abstract class ComponentEffect<T extends Component> {
   final bool isRelative;
   final bool _initialIsInfinite;
   final bool _initialIsAlternating;
-  double percentage;
-  double curveProgress;
-  double peakTime;
+  double? percentage;
+  double curveProgress = 0.0; /// FIXME: is it a safe default?
+
+  /// FIXME: Where it's been set? Let's try defaulting it to 0.0 for now as at least
+  /// some subclasses set it in `initialize` method
+  double peakTime = 0.0;
   double currentTime = 0.0;
   double driftTime = 0.0;
   int curveDirection = 1;
@@ -43,13 +46,11 @@ abstract class ComponentEffect<T extends Component> {
     this._initialIsInfinite,
     this._initialIsAlternating, {
     this.isRelative = false,
-    this.curve = Curves.linear,
+    Curve? curve,
     this.onComplete,
-  }) {
-    isInfinite = _initialIsInfinite;
-    isAlternating = _initialIsAlternating;
-    curve ??= Curves.linear;
-  }
+  })  : curve = curve ?? Curves.linear,
+        isInfinite = _initialIsInfinite,
+        isAlternating = _initialIsAlternating;
 
   @mustCallSuper
   void update(double dt) {
@@ -64,7 +65,7 @@ abstract class ComponentEffect<T extends Component> {
     if (!hasCompleted()) {
       currentTime += (dt + driftTime) * curveDirection;
       percentage = (currentTime / peakTime).clamp(0.0, 1.0).toDouble();
-      curveProgress = curve.transform(percentage);
+      curveProgress = curve.transform(percentage!);
       _updateDriftTime();
       currentTime = currentTime.clamp(0.0, peakTime).toDouble();
     }
@@ -85,7 +86,7 @@ abstract class ComponentEffect<T extends Component> {
 
   bool isMax() => percentage == null ? false : percentage == 1.0;
   bool isMin() => percentage == null ? false : percentage == 0.0;
-  bool isRootEffect() => component?.effects?.contains(this) ?? false;
+  bool isRootEffect() => component?.effects.contains(this) ?? false;
 
   void reset() {
     _isDisposed = false;
@@ -117,21 +118,21 @@ abstract class ComponentEffect<T extends Component> {
 abstract class PositionComponentEffect
     extends ComponentEffect<PositionComponent> {
   /// Used to be able to determine the start state of the component
-  Vector2 originalPosition;
-  double originalAngle;
-  Vector2 originalSize;
+  late Vector2 originalPosition;
+  late double originalAngle;
+  late Vector2 originalSize;
 
   /// Used to be able to determine the end state of a sequence of effects
-  Vector2 endPosition;
-  double endAngle;
-  Vector2 endSize;
+  late Vector2 endPosition;
+  late double endAngle;
+  late Vector2 endSize;
 
   PositionComponentEffect(
     bool initialIsInfinite,
     bool initialIsAlternating, {
     bool isRelative = false,
-    Curve curve,
-    void Function() onComplete,
+    Curve? curve,
+    void Function()? onComplete,
   }) : super(
           initialIsInfinite,
           initialIsAlternating,
@@ -160,34 +161,34 @@ abstract class PositionComponentEffect
   @override
   void setComponentToOriginalState() {
     if (isRootEffect()) {
-      component?.position?.setFrom(originalPosition);
+      component?.position.setFrom(originalPosition);
       component?.angle = originalAngle;
-      component?.size?.setFrom(endSize);
+      component?.size.setFrom(endSize);
     }
   }
 
   @override
   void setComponentToEndState() {
     if (isRootEffect()) {
-      component?.position?.setFrom(endPosition);
+      component?.position.setFrom(endPosition);
       component?.angle = endAngle;
-      component?.size?.setFrom(endSize);
+      component?.size.setFrom(endSize);
     }
   }
 }
 
 abstract class SimplePositionComponentEffect extends PositionComponentEffect {
-  double duration;
-  double speed;
+  double? duration;
+  double? speed;
 
   SimplePositionComponentEffect(
     bool initialIsInfinite,
     bool initialIsAlternating, {
     this.duration,
     this.speed,
-    Curve curve,
+    Curve? curve,
     bool isRelative = false,
-    void Function() onComplete,
+    void Function()? onComplete,
   })  : assert(
           (duration != null) ^ (speed != null),
           "Either speed or duration necessary",
