@@ -5,6 +5,7 @@
  - Add TextBoxConfig options; margins and growingBox
  - Fix debugConfig strokeWidth for web
  - Update Forge2D docs
+ - Dragable mixin for components
 
 ## 1.0.0-rc2
  - Improve IsometricTileMap and Spritesheet classes
