@@ -11,11 +11,11 @@ mixin MultiTouchTapDetector on Game {
 }
 
 class DragEvent extends Drag {
-  Offset initialPosition;
+  Offset? initialPosition;
 
-  void Function(DragUpdateDetails) onUpdate;
-  void Function() onCancel;
-  void Function(DragEndDetails) onEnd;
+  void Function(DragUpdateDetails)? onUpdate;
+  void Function()? onCancel;
+  void Function(DragEndDetails)? onEnd;
 
   @override
   void update(details) {

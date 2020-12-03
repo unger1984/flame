@@ -9,11 +9,11 @@ class CurvedParticle extends Particle {
 
   CurvedParticle({
     this.curve = Curves.linear,
-    double lifespan,
+    double? lifespan,
   }) : super(
           lifespan: lifespan,
         );
 
   @override
-  double get progress => curve.transform(super.progress);
+  double get progress => curve.transform(super.progress ?? 0);
 }

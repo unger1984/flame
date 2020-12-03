@@ -1,8 +1,8 @@
-import 'package:flame/sprite_animation.dart';
 import 'package:flame/components/sprite_animation_component.dart';
+import 'package:flame/extensions/vector2.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
-import 'package:flame/extensions/vector2.dart';
+import 'package:flame/sprite_animation.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -13,7 +13,7 @@ void main() async {
 }
 
 class MyGame extends BaseGame {
-  SpriteAnimation animation;
+  SpriteAnimation? animation;
 
   @override
   Future<void> onLoad() async {
@@ -41,7 +41,8 @@ class MyGame extends BaseGame {
   }
 
   SpriteAnimationComponent buildAnimation() {
-    final ac = SpriteAnimationComponent(Vector2.all(100), animation);
+    assert(animation != null);
+    final ac = SpriteAnimationComponent(Vector2.all(100), animation!);
     ac.x = size.x / 2 - ac.x / 2;
     return ac;
   }

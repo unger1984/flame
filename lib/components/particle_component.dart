@@ -20,7 +20,7 @@ class ParticleComponent extends Component {
 
   /// Returns progress of the child [Particle]
   /// so could be used by external code for something
-  double get progress => particle.progress;
+  double? get progress => particle.progress;
 
   /// Passes rendering chain down to the inset
   /// [Particle] within this [Component].

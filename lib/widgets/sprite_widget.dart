@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/widgets.dart';
-import 'package:meta/meta.dart';
 
 import '../anchor.dart';
 import '../extensions/size.dart';
@@ -19,7 +18,7 @@ class SpriteWidget extends StatelessWidget {
   final Anchor anchor;
 
   SpriteWidget({
-    @required this.sprite,
+    required this.sprite,
     this.anchor = Anchor.topLeft,
   });
 

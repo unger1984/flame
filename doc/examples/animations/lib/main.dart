@@ -1,12 +1,13 @@
-import 'package:flame/gestures.dart';
-import 'package:flutter/gestures.dart';
+import 'dart:ui';
+
+import 'package:flame/components/sprite_animation_component.dart';
+import 'package:flame/extensions/vector2.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
-import 'package:flame/extensions/vector2.dart';
+import 'package:flame/gestures.dart';
 import 'package:flame/sprite_animation.dart';
-import 'package:flame/components/sprite_animation_component.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide Image;
-import 'dart:ui';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,9 +18,9 @@ void main() async {
 }
 
 class MyGame extends BaseGame with TapDetector {
-  Image chopper;
-  Image creature;
-  SpriteAnimation animation;
+  Image? chopper;
+  Image? creature;
+  SpriteAnimation? animation;
 
   @override
   Future<void> onLoad() async {
@@ -27,7 +28,7 @@ class MyGame extends BaseGame with TapDetector {
     creature = await images.load('creature.png');
 
     animation = SpriteAnimation.sequenced(
-      chopper,
+      chopper!,
       4,
       textureSize: Vector2.all(48),
       stepTime: 0.15,
@@ -40,7 +41,7 @@ class MyGame extends BaseGame with TapDetector {
 
     final animationComponent = SpriteAnimationComponent.sequenced(
       size,
-      creature,
+      creature!,
       18,
       amountPerRow: 10,
       textureSize: size,
@@ -53,13 +54,14 @@ class MyGame extends BaseGame with TapDetector {
     add(animationComponent);
 
     final spriteSize = Vector2.all(100.0);
-    final animationComponent2 = SpriteAnimationComponent(spriteSize, animation);
+    final animationComponent2 =
+        SpriteAnimationComponent(spriteSize, animation!);
     animationComponent2.x = size.x / 2 - spriteSize.x;
     animationComponent2.y = spriteSize.y;
 
     final reversedAnimationComponent = SpriteAnimationComponent(
       spriteSize,
-      animation.reversed(),
+      animation!.reversed(),
     );
     reversedAnimationComponent.x = size.x / 2;
     reversedAnimationComponent.y = spriteSize.y;

@@ -4,9 +4,9 @@ import 'dart:ui';
 
 import 'package:flutter/widgets.dart' hide Image;
 
+import '../extensions/vector2.dart';
 import '../palette.dart';
 import '../text_config.dart';
-import '../extensions/vector2.dart';
 import 'mixins/resizable.dart';
 import 'position_component.dart';
 
@@ -118,24 +118,25 @@ class TextBoxComponent extends PositionComponent with Resizable {
 
   @override
   double get width {
-    if (_cachedWidth != null) {
-      return _cachedWidth!;
-    }
-    if (_boxConfig.growingBox) {
-      int i = 0;
-      int totalCharCount = 0;
-      final int _currentChar = currentChar;
-      final int _currentLine = currentLine;
-      final double textWidth = _lines.sublist(0, _currentLine + 1).map((line) {
-        final int charCount =
-            (i < _currentLine) ? line.length : (_currentChar - totalCharCount);
-        totalCharCount += line.length;
-        i++;
-        return getLineWidth(line, charCount);
-      }).reduce(math.max);
-      _cachedWidth = textWidth + _boxConfig.margins.horizontal;
-    } else {
-      _cachedWidth = _boxConfig.maxWidth + _boxConfig.margins.horizontal;
+    if (_cachedWidth == null) {
+      if (_boxConfig.growingBox) {
+        int i = 0;
+        int totalCharCount = 0;
+        final int _currentChar = currentChar;
+        final int _currentLine = currentLine;
+        final double textWidth =
+            _lines.sublist(0, _currentLine + 1).map((line) {
+          final int charCount = (i < _currentLine)
+              ? line.length
+              : (_currentChar - totalCharCount);
+          totalCharCount += line.length;
+          i++;
+          return getLineWidth(line, charCount);
+        }).reduce(math.max);
+        _cachedWidth = textWidth + _boxConfig.margins.horizontal;
+      } else {
+        _cachedWidth = _boxConfig.maxWidth + _boxConfig.margins.horizontal;
+      }
     }
     return _cachedWidth!;
   }

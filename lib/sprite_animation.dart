@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'dart:ui';
 
 import 'extensions/vector2.dart';
@@ -102,7 +101,7 @@ class SpriteAnimation {
     Vector2? texturePosition,
     required Vector2 textureSize,
     this.loop = true,
-  })  : assert(amountPerRow == null || amount >= amountPerRow) {
+  }) : assert(amountPerRow == null || amount >= amountPerRow) {
     amountPerRow ??= amount;
     texturePosition ??= Vector2.zero();
     frames = List<SpriteAnimationFrame>.generate(amount, (index) {

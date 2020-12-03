@@ -96,8 +96,8 @@ abstract class Game {
   /// Resumes the engine game loop execution
   void resumeEngine() => resumeEngineFn?.call();
 
-  VoidCallback pauseEngineFn;
-  VoidCallback resumeEngineFn;
+  VoidCallback? pauseEngineFn;
+  VoidCallback? resumeEngineFn;
 
   /// Use this method to load the assets need for the game instance to run
   Future<void> onLoad() async {}
@@ -108,7 +108,7 @@ abstract class Game {
 
 class OverlayWidget {
   final String name;
-  final Widget widget;
+  final Widget? widget;
 
   OverlayWidget(this.name, this.widget);
 }

@@ -1,17 +1,16 @@
+import 'package:dashbook/dashbook.dart';
+import 'package:flame/anchor.dart';
 import 'package:flame/extensions/vector2.dart';
-import 'package:flutter/material.dart' hide Animation;
 import 'package:flame/flame.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame/spritesheet.dart';
-import 'package:dashbook/dashbook.dart';
-
+import 'package:flame/widgets/animation_widget.dart';
 import 'package:flame/widgets/nine_tile_box.dart';
 import 'package:flame/widgets/sprite_button.dart';
 import 'package:flame/widgets/sprite_widget.dart';
-import 'package:flame/widgets/animation_widget.dart';
-import 'package:flame/anchor.dart';
+import 'package:flutter/material.dart' hide Animation;
 
-Anchor parseAnchor(String name) {
+Anchor? parseAnchor(String? name) {
   switch (name) {
     case 'Anchor.topLeft':
       return Anchor.topLeft;
@@ -108,8 +107,9 @@ void main() async {
           child: SpriteWidget(
             sprite: shieldSprite,
             anchor: parseAnchor(
-              ctx.listProperty('anchor', 'Anchor.center', anchorOptions),
-            ),
+                  ctx.listProperty('anchor', 'Anchor.center', anchorOptions),
+                ) ??
+                Anchor.topLeft,
           ),
         ),
       );
@@ -134,8 +134,9 @@ void main() async {
             animation: _animation,
             playing: ctx.boolProperty('playing', true),
             anchor: parseAnchor(
-              ctx.listProperty('anchor', 'Anchor.center', anchorOptions),
-            ),
+                  ctx.listProperty('anchor', 'Anchor.center', anchorOptions),
+                ) ??
+                Anchor.topLeft,
           ),
         ),
       );

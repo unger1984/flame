@@ -7,15 +7,17 @@ import 'palette.dart';
 class Sprite {
   Paint paint = BasicPalette.white.paint;
   Image image;
-  Rect src;
+
+  /// `srcSize`/`srcPosition` setters in the constructor set `src`
+  late Rect src;
 
   Sprite(
     this.image, {
-    Vector2 srcPosition,
-    Vector2 srcSize,
-  }) : assert(image != null, "image can't be null") {
-    this.srcSize = srcSize;
-    this.srcPosition = srcPosition;
+    Vector2? srcPosition,
+    Vector2? srcSize,
+  }) {
+    this.srcSize = srcSize ?? Vector2.all(0.0);
+    this.srcPosition = srcPosition ?? Vector2.all(0.0);
   }
 
   double get _imageWidth => image.width.toDouble();
@@ -26,14 +28,14 @@ class Sprite {
 
   Vector2 get srcSize => Vector2(src.width, src.height);
 
-  set srcSize(Vector2 size) {
+  set srcSize(Vector2? size) {
     size ??= Vector2Extension.fromInts(image.width, image.height);
     src = (srcPosition ?? Vector2.zero()).toPositionedRect(size);
   }
 
-  Vector2 get srcPosition => (src?.topLeft ?? Offset.zero).toVector2();
+  Vector2? get srcPosition => src.topLeft.toVector2();
 
-  set srcPosition(Vector2 position) {
+  set srcPosition(Vector2? position) {
     src = (position ?? Vector2.zero()).toPositionedRect(srcSize);
   }
 
@@ -46,21 +48,21 @@ class Sprite {
     Canvas canvas,
     Vector2 p, {
     double scale = 1.0,
-    Paint overridePaint,
+    Paint? overridePaint,
   }) {
     renderPosition(
       canvas,
       p,
       size: srcSize * scale,
-      overridePaint: overridePaint,
+      overridePaint: overridePaint ?? Paint(),
     );
   }
 
   void renderPosition(
     Canvas canvas,
     Vector2 p, {
-    Vector2 size,
-    Paint overridePaint,
+    Vector2? size,
+    Paint? overridePaint,
   }) {
     size ??= srcSize;
     renderRect(canvas, p.toPositionedRect(size), overridePaint: overridePaint);
@@ -68,7 +70,7 @@ class Sprite {
 
   void render(
     Canvas canvas, {
-    Vector2 size,
+    Vector2? size,
     Paint? overridePaint,
   }) {
     size ??= srcSize;
@@ -82,8 +84,8 @@ class Sprite {
   void renderCentered(
     Canvas canvas,
     Vector2 p, {
-    Vector2 size,
-    Paint overridePaint,
+    Vector2? size,
+    Paint? overridePaint,
   }) {
     size ??= srcSize;
     renderRect(

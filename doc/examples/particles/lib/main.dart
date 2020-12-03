@@ -2,29 +2,29 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:flame/sprite_animation.dart';
 import 'package:flame/components/component.dart';
-import 'package:flame/particles/circle_particle.dart';
-import 'package:flame/particles/composed_particle.dart';
-import 'package:flame/particles/curved_particle.dart';
-import 'package:flame/particles/moving_particle.dart';
-import 'package:flame/particles/sprite_particle.dart';
-import 'package:flame/particles/translated_particle.dart';
-import 'package:flame/particles/computed_particle.dart';
-import 'package:flame/particles/image_particle.dart';
-import 'package:flame/particles/rotating_particle.dart';
-import 'package:flame/particles/accelerated_particle.dart';
-import 'package:flame/particles/paint_particle.dart';
-import 'package:flame/particles/animation_particle.dart';
-import 'package:flame/particles/component_particle.dart';
+import 'package:flame/extensions/vector2.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
-import 'package:flame/timer.dart' as flame_time;
 import 'package:flame/particle.dart';
-import 'package:flame/extensions/vector2.dart';
+import 'package:flame/particles/accelerated_particle.dart';
+import 'package:flame/particles/animation_particle.dart';
+import 'package:flame/particles/circle_particle.dart';
+import 'package:flame/particles/component_particle.dart';
+import 'package:flame/particles/composed_particle.dart';
+import 'package:flame/particles/computed_particle.dart';
+import 'package:flame/particles/curved_particle.dart';
+import 'package:flame/particles/image_particle.dart';
+import 'package:flame/particles/moving_particle.dart';
+import 'package:flame/particles/paint_particle.dart';
+import 'package:flame/particles/rotating_particle.dart';
+import 'package:flame/particles/sprite_particle.dart';
+import 'package:flame/particles/translated_particle.dart';
 import 'package:flame/sprite.dart';
+import 'package:flame/sprite_animation.dart';
 import 'package:flame/spritesheet.dart';
 import 'package:flame/text_config.dart';
+import 'package:flame/timer.dart' as flame_time;
 import 'package:flutter/material.dart' hide Animation, Image;
 
 void main() async => runApp((await loadGame()).widget);
@@ -48,13 +48,13 @@ class MyGame extends BaseGame {
   /// Defines the lifespan of all the particles in these examples
   final sceneDuration = const Duration(seconds: 1);
 
-  Vector2 cellSize;
-  Vector2 halfCellSize;
+  Vector2? cellSize;
+  Vector2? halfCellSize;
 
-  MyGame({Vector2 screenSize}) {
+  MyGame({required Vector2 screenSize}) {
     size = screenSize;
     cellSize = size / gridSize;
-    halfCellSize = cellSize * .5;
+    halfCellSize = cellSize! * .5;
 
     // Spawn new particles every second
     Timer.periodic(sceneDuration, (_) => spawnParticles());
@@ -102,7 +102,7 @@ class MyGame extends BaseGame {
       final double col = particles.length % gridSize;
       final double row = (particles.length ~/ gridSize).toDouble();
       final cellCenter =
-          (cellSize.clone()..multiply(Vector2(col, row))) + (cellSize * .5);
+          (cellSize!.clone()..multiply(Vector2(col, row))) + (cellSize! * .5);
 
       add(
         // Bind all the particles to a [Component] update
@@ -163,10 +163,10 @@ class MyGame extends BaseGame {
     return Particle.generate(
       count: 5,
       generator: (i) {
-        final currentColumn = (cellSize.x / 5) * i - halfCellSize.x;
+        final currentColumn = (cellSize!.x / 5) * i - halfCellSize!.x;
         return MovingParticle(
-          from: Offset(currentColumn, -halfCellSize.y),
-          to: Offset(currentColumn, halfCellSize.y),
+          from: Offset(currentColumn, -halfCellSize!.y),
+          to: Offset(currentColumn, halfCellSize!.y),
           child: CircleParticle(
             radius: 2.0,
             paint: Paint()..color = Colors.blue,
@@ -235,13 +235,14 @@ class MyGame extends BaseGame {
     return ComputedParticle(
       renderer: (canvas, particle) => canvas.drawCircle(
         Offset.zero,
-        particle.progress * halfCellSize.x,
+        (particle.progress ?? 0) * halfCellSize!.x,
         Paint()
           ..color = Color.lerp(
-            Colors.red,
-            Colors.blue,
-            particle.progress,
-          ),
+                Colors.red,
+                Colors.blue,
+                particle.progress ?? 0.0,
+              ) ??
+              const Color(0),
       ),
     );
   }
@@ -255,24 +256,25 @@ class MyGame extends BaseGame {
       renderer: (canvas, particle) {
         const steps = 5;
         final steppedProgress =
-            steppedTween.transform(particle.progress) / steps;
+            steppedTween.transform(particle.progress ?? 0) / steps;
 
         canvas.drawCircle(
           Offset.zero,
-          (1 - steppedProgress) * halfCellSize.x,
+          (1 - steppedProgress) * halfCellSize!.x,
           Paint()
             ..color = Color.lerp(
-              Colors.red,
-              Colors.blue,
-              steppedProgress,
-            ),
+                  Colors.red,
+                  Colors.blue,
+                  steppedProgress,
+                ) ??
+                const Color(0),
         );
       },
     );
   }
 
   /// Particle which is used in example below
-  Particle reusablePatricle;
+  Particle? reusablePatricle;
 
   /// A burst of white circles which actually using a single circle
   /// as a form of optimization. Look for reusing parts of particle effects
@@ -301,7 +303,7 @@ class MyGame extends BaseGame {
   }
 
   /// Particle which is used in example below
-  Particle reusableImageParticle;
+  Particle? reusableImageParticle;
 
   /// A single [imageParticle] is drawn 9 times
   /// in a grid within grid cell. Looks as 9 particles
@@ -310,8 +312,8 @@ class MyGame extends BaseGame {
     const count = 9;
     const perLine = 3;
     const imageSize = 24.0;
-    final colWidth = cellSize.x / perLine;
-    final rowHeight = cellSize.y / perLine;
+    final colWidth = cellSize!.x / perLine;
+    final rowHeight = cellSize!.y / perLine;
 
     reusableImageParticle ??= imageParticle();
 
@@ -319,8 +321,8 @@ class MyGame extends BaseGame {
       count: count,
       generator: (i) => TranslatedParticle(
           offset: Offset(
-            (i % perLine) * colWidth - halfCellSize.x + imageSize,
-            (i ~/ perLine) * rowHeight - halfCellSize.y + imageSize,
+            (i % perLine) * colWidth - halfCellSize!.x + imageSize,
+            (i ~/ perLine) * rowHeight - halfCellSize!.y + imageSize,
           ),
           child: reusableImageParticle),
     );
@@ -387,7 +389,7 @@ class MyGame extends BaseGame {
   Particle spriteParticle() {
     return SpriteParticle(
       sprite: Sprite(images.fromCache('zap.png')),
-      size: cellSize * .5,
+      size: cellSize! * .5,
     );
   }
 
@@ -406,8 +408,8 @@ class MyGame extends BaseGame {
   /// which is independent from the parent [Particle].
   Particle componentParticle() {
     return MovingParticle(
-      from: (-halfCellSize * .2).toOffset(),
-      to: (halfCellSize * .2).toOffset(),
+      from: (-halfCellSize! * .2).toOffset(),
+      to: (halfCellSize! * .2).toOffset(),
       curve: SineCurve(),
       child: ComponentParticle(component: trafficLight),
     );
@@ -443,15 +445,15 @@ class MyGame extends BaseGame {
           child: ComputedParticle(renderer: (canvas, particle) {
             final paint = randomElement(paints);
             // Override the color to dynamically update opacity
-            paint.color = paint.color.withOpacity(1 - particle.progress);
+            paint.color = paint.color.withOpacity(1 - (particle.progress ?? 0));
 
             canvas.drawCircle(
               Offset.zero,
               // Closer to the end of lifespan particles
               // will turn into larger glaring circles
-              rnd.nextDouble() * particle.progress > .6
-                  ? rnd.nextDouble() * (50 * particle.progress)
-                  : 2 + (3 * particle.progress),
+              rnd.nextDouble() * (particle.progress ?? 0) > .6
+                  ? rnd.nextDouble() * (50 * (particle.progress ?? 0))
+                  : 2 + (3 * (particle.progress ?? 0)),
               paint,
             );
           }),
@@ -474,8 +476,8 @@ class MyGame extends BaseGame {
       ),
     );
 
-    final cellSizeOffset = cellSize.toOffset();
-    final halfCellSizeOffset = halfCellSize.toOffset();
+    final cellSizeOffset = cellSize!.toOffset();
+    final halfCellSizeOffset = halfCellSize!.toOffset();
 
     return ComposedParticle(children: <Particle>[
       rect
@@ -510,8 +512,8 @@ class MyGame extends BaseGame {
   /// grid cell
   Offset randomCellOffset() {
     return Offset(
-      cellSize.x * rnd.nextDouble() - halfCellSize.x,
-      cellSize.y * rnd.nextDouble() - halfCellSize.y,
+      cellSize!.x * rnd.nextDouble() - halfCellSize!.x,
+      cellSize!.y * rnd.nextDouble() - halfCellSize!.y,
     );
   }
 

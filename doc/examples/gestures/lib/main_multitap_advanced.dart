@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
 import 'package:flame/gestures.dart';
 import 'package:flame/palette.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   final game = MyGame();
@@ -12,13 +12,13 @@ void main() {
 class MyGame extends Game with MultiTouchTapDetector, MultiTouchDragDetector {
   final _whitePaint = BasicPalette.white.paint;
 
-  Paint _paint;
+  Paint? _paint;
 
   final Map<int, Rect> _taps = {};
 
-  Offset _start;
-  Offset _end;
-  Rect _panRect;
+  Offset? _start;
+  Offset? _end;
+  Rect? _panRect;
 
   MyGame() {
     _paint = _whitePaint;
@@ -46,12 +46,14 @@ class MyGame extends Game with MultiTouchTapDetector, MultiTouchDragDetector {
 
   @override
   void onReceiveDrag(DragEvent event) {
-    onPanStart(event.initialPosition);
+    if (event.initialPosition != null) {
+      onPanStart(event.initialPosition!);
 
-    event
-      ..onUpdate = onPanUpdate
-      ..onEnd = onPanEnd
-      ..onCancel = onPanCancel;
+      event
+        ..onUpdate = onPanUpdate
+        ..onEnd = onPanEnd
+        ..onCancel = onPanCancel;
+    }
   }
 
   void onPanCancel() {
@@ -70,12 +72,14 @@ class MyGame extends Game with MultiTouchTapDetector, MultiTouchDragDetector {
   }
 
   void onPanEnd(DragEndDetails details) {
-    _panRect = Rect.fromLTRB(
-      _start.dx,
-      _start.dy,
-      _end.dx,
-      _end.dy,
-    );
+    if (_start != null && _end != null) {
+      _panRect = Rect.fromLTRB(
+        _start!.dx,
+        _start!.dy,
+        _end!.dx,
+        _end!.dy,
+      );
+    }
   }
 
   @override
@@ -84,11 +88,11 @@ class MyGame extends Game with MultiTouchTapDetector, MultiTouchDragDetector {
   @override
   void render(Canvas canvas) {
     _taps.values.forEach((rect) {
-      canvas.drawRect(rect, _paint);
+      canvas.drawRect(rect, _paint!);
     });
 
     if (_panRect != null) {
-      canvas.drawRect(_panRect, _paint);
+      canvas.drawRect(_panRect!, _paint!);
     }
   }
 }

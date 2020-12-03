@@ -197,24 +197,28 @@ class JoystickAction {
   }
 
   void onReceiveDrag(DragEvent event) {
-    if (!_dragging && (_rectAction?.contains(event.initialPosition) ?? false)) {
-      if (enableDirection) {
-        _dragPosition = event.initialPosition;
-        _dragging = true;
-      }
-      _joystickController.joystickAction(
-        JoystickActionEvent(
-          id: actionId,
-          event: ActionEvent.DOWN,
-        ),
-      );
-      tapDown();
-      _currentDragEvent = event;
-      _currentDragEvent!
-        ..onUpdate = onPanUpdate
-        ..onEnd = onPanEnd
-        ..onCancel = onPanCancel;
+    if (event.initialPosition == null ||
+        _dragging ||
+        !(_rectAction?.contains(event.initialPosition!) ?? false)) {
+      return;
     }
+
+    if (enableDirection) {
+      _dragPosition = event.initialPosition!;
+      _dragging = true;
+    }
+    _joystickController.joystickAction(
+      JoystickActionEvent(
+        id: actionId,
+        event: ActionEvent.DOWN,
+      ),
+    );
+    tapDown();
+    _currentDragEvent = event;
+    _currentDragEvent!
+      ..onUpdate = onPanUpdate
+      ..onEnd = onPanEnd
+      ..onCancel = onPanCancel;
   }
 
   void tapDown() {

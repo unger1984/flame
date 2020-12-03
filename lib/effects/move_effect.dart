@@ -93,8 +93,12 @@ class MoveEffect extends SimplePositionComponentEffect {
       lastPosition = v;
     }
     final double totalPathLength = isAlternating ? pathLength * 2 : pathLength;
-    speed ??= totalPathLength / duration!;  /// `duration` is not null when speed is
-    duration ??= totalPathLength / speed!;  /// `speed` is always not null here already
+    speed ??= totalPathLength / duration!;
+
+    /// `duration` is not null when speed is null
+    duration ??= totalPathLength / speed!;
+
+    /// `speed` is always not null here already
     peakTime = isAlternating ? duration! / 2 : duration!;
   }
 

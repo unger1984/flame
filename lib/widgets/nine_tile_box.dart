@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart' as widgets;
-import 'package:meta/meta.dart';
 
 import '../extensions/vector2.dart';
 import '../sprite.dart';
@@ -13,9 +12,9 @@ class _Painter extends widgets.CustomPainter {
   final double destTileSize;
 
   _Painter({
-    @required this.image,
-    @required this.tileSize,
-    @required this.destTileSize,
+    required this.image,
+    required this.tileSize,
+    required this.destTileSize,
   });
 
   Sprite _getSpriteTile(double x, double y) =>
@@ -124,18 +123,18 @@ class NineTileBox extends widgets.StatelessWidget {
   final Image image;
   final double tileSize;
   final double destTileSize;
-  final double width;
-  final double height;
+  final double? width;
+  final double? height;
 
-  final widgets.Widget child;
+  final widgets.Widget? child;
 
-  final widgets.EdgeInsetsGeometry padding;
+  final widgets.EdgeInsetsGeometry? padding;
 
   NineTileBox({
-    @required this.image,
-    @required this.tileSize,
-    @required this.destTileSize,
-    Key key,
+    required this.image,
+    required this.tileSize,
+    required this.destTileSize,
+    Key? key,
     this.child,
     this.width,
     this.height,

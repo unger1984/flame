@@ -18,7 +18,7 @@ class SpriteAnimationWidget extends StatefulWidget {
   final bool playing;
 
   SpriteAnimationWidget({
-    this.animation,
+    required this.animation,
     this.playing = true,
     this.anchor = Anchor.topLeft,
   });
@@ -29,8 +29,8 @@ class SpriteAnimationWidget extends StatefulWidget {
 
 class _AnimationWidget extends State<SpriteAnimationWidget>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  double _lastUpdated;
+  AnimationController? _controller;
+  double? _lastUpdated;
 
   @override
   void didUpdateWidget(oldWidget) {
@@ -50,7 +50,7 @@ class _AnimationWidget extends State<SpriteAnimationWidget>
       ..addListener(() {
         final now = DateTime.now().millisecond.toDouble();
 
-        final dt = max(0, (now - _lastUpdated) / 1000).toDouble();
+        final dt = max(0, (now - (_lastUpdated ?? 0)) / 1000).toDouble();
         widget.animation.update(dt);
 
         setState(() {
@@ -69,7 +69,7 @@ class _AnimationWidget extends State<SpriteAnimationWidget>
     setState(() {
       widget.animation.reset();
       _lastUpdated = DateTime.now().millisecond.toDouble();
-      _controller.repeat(
+      _controller?.repeat(
         // Approximately 60 fps
         period: const Duration(milliseconds: 16),
       );
@@ -77,12 +77,12 @@ class _AnimationWidget extends State<SpriteAnimationWidget>
   }
 
   void _pauseAnimation() {
-    setState(() => _controller.stop());
+    setState(() => _controller?.stop());
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 

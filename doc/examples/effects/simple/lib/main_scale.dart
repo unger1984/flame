@@ -1,14 +1,14 @@
-import 'package:flutter/material.dart';
+import 'package:flame/anchor.dart';
+import 'package:flame/effects/effects.dart';
+import 'package:flame/extensions/vector2.dart';
 import 'package:flame/game.dart';
 import 'package:flame/gestures.dart';
-import 'package:flame/anchor.dart';
-import 'package:flame/extensions/vector2.dart';
-import 'package:flame/effects/effects.dart';
+import 'package:flutter/material.dart';
 
 import './square.dart';
 
 class MyGame extends BaseGame with TapDetector {
-  Square square;
+  Square? square;
   bool grow = true;
 
   MyGame() {
@@ -23,7 +23,7 @@ class MyGame extends BaseGame with TapDetector {
     final s = grow ? 300.0 : 100.0;
 
     grow = !grow;
-    square.addEffect(ScaleEffect(
+    square!.addEffect(ScaleEffect(
       size: Vector2(s, s),
       speed: 250.0,
       curve: Curves.bounceInOut,

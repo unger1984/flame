@@ -56,7 +56,7 @@ class TextConfig {
   final TextDirection textDirection;
 
   /// The height of line, as a multiple of font size.
-  final double lineHeight;
+  final double? lineHeight;
 
   final MemoryCache<String, material.TextPainter> _textPainterCache =
       MemoryCache();
@@ -88,9 +88,12 @@ class TextConfig {
     Vector2 p, {
     Anchor anchor = Anchor.topLeft,
   }) {
-    final material.TextPainter tp = toTextPainter(text);
-    final Vector2 translatedPosition = anchor.translate(p, tp.size.toVector2());
-    tp.paint(canvas, translatedPosition.toOffset());
+    final material.TextPainter? tp = toTextPainter(text);
+    if (tp != null) {
+      final Vector2 translatedPosition =
+          anchor.translate(p, tp.size.toVector2());
+      tp.paint(canvas, translatedPosition.toOffset());
+    }
   }
 
   /// Returns a [material.TextPainter] that allows for text rendering and size measuring.
@@ -126,7 +129,7 @@ class TextConfig {
 
       _textPainterCache.setValue(text, tp);
     }
-    return _textPainterCache.getValue(text);
+    return _textPainterCache.getValue(text)!;
   }
 
   /// Creates a new [TextConfig] changing only the [fontSize].

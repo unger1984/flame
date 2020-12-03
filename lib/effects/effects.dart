@@ -30,7 +30,9 @@ abstract class ComponentEffect<T extends Component> {
   final bool _initialIsInfinite;
   final bool _initialIsAlternating;
   double? percentage;
-  double curveProgress = 0.0; /// FIXME: is it a safe default?
+
+  /// FIXME: is it a safe default?
+  double curveProgress = 0.0;
 
   /// FIXME: Where it's been set? Let's try defaulting it to 0.0 for now as at least
   /// some subclasses set it in `initialize` method

@@ -1,16 +1,15 @@
-import 'package:flutter/material.dart';
-
-import 'package:flame/sprite.dart';
-import 'package:flame/game.dart';
-
 import 'dart:ui';
+
+import 'package:flame/game.dart';
+import 'package:flame/sprite.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyGame().widget);
 }
 
 class MyGame extends Game {
-  Sprite _sprite;
+  Sprite? _sprite;
 
   @override
   Future<void> onLoad() async {
@@ -25,6 +24,6 @@ class MyGame extends Game {
 
   @override
   void render(Canvas canvas) {
-    _sprite.renderRect(canvas, const Rect.fromLTWH(100, 100, 100, 100));
+    _sprite?.renderRect(canvas, const Rect.fromLTWH(100, 100, 100, 100));
   }
 }

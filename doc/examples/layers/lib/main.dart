@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart' hide Animation;
-import 'package:flame/game.dart';
-import 'package:flame/sprite.dart';
-import 'package:flame/layer/layer.dart';
-import 'package:flame/flame.dart';
-
 import 'dart:ui';
+
+import 'package:flame/flame.dart';
+import 'package:flame/game.dart';
+import 'package:flame/layer/layer.dart';
+import 'package:flame/sprite.dart';
+import 'package:flutter/material.dart' hide Animation;
 
 void main() async {
   Flame.initializeWidget();
@@ -52,8 +52,8 @@ class BackgroundLayer extends PreRenderedLayer {
 }
 
 class LayerGame extends Game {
-  Layer gameLayer;
-  Layer backgroundLayer;
+  Layer? gameLayer;
+  Layer? backgroundLayer;
 
   @override
   Future<void> onLoad() async {
@@ -70,8 +70,8 @@ class LayerGame extends Game {
 
   @override
   void render(Canvas canvas) {
-    gameLayer.render(canvas);
-    backgroundLayer.render(canvas);
+    gameLayer?.render(canvas);
+    backgroundLayer?.render(canvas);
   }
 
   @override

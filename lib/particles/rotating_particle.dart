@@ -1,8 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
-
 import '../components/mixins/single_child_particle.dart';
 import '../particle.dart';
 import 'curved_particle.dart';
@@ -17,20 +15,20 @@ class RotatingParticle extends CurvedParticle with SingleChildParticle {
   final double to;
 
   RotatingParticle({
-    @required this.child,
+    required this.child,
     this.from = 0,
     this.to = 2 * pi,
-    double lifespan,
+    double? lifespan,
   }) : super(
           lifespan: lifespan,
         );
 
-  double get angle => lerpDouble(from, to, progress);
+  double? get angle => lerpDouble(from, to, progress);
 
   @override
   void render(Canvas canvas) {
     canvas.save();
-    canvas.rotate(angle);
+    canvas.rotate(angle ?? 0);
     super.render(canvas);
     canvas.restore();
   }

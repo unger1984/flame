@@ -167,7 +167,11 @@ class JoystickDirectional {
   }
 
   void onReceiveDrag(DragEvent event) {
-    _updateDirectionalRect(event.initialPosition);
+    if (event.initialPosition == null) {
+      return;
+    }
+
+    _updateDirectionalRect(event.initialPosition!);
 
     final Rect directional = Rect.fromLTWH(
       _backgroundRect!.left - 50,
@@ -176,7 +180,7 @@ class JoystickDirectional {
       _backgroundRect!.height + 100,
     );
 
-    if (!_dragging && directional.contains(event.initialPosition)) {
+    if (!_dragging && directional.contains(event.initialPosition!)) {
       _dragging = true;
       _dragPosition = event.initialPosition;
       _currentDragEvent = event;

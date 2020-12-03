@@ -16,13 +16,13 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key}) : super(key: key);
+  MyHomePage({Key? key}) : super(key: key);
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  ExampleGame _myGame;
+  ExampleGame? _myGame;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: const Text('Testing addingOverlay'),
       ),
-      body: _myGame == null ? const Text('Wait') : _myGame.widget,
+      body: _myGame?.widget ?? const Text('Wait'),
       floatingActionButton: FloatingActionButton(
         onPressed: () => newGame(),
         child: const Icon(Icons.add),

@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
 import 'package:flame/gestures.dart';
 import 'package:flame/palette.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   final game = MyGame();
@@ -16,7 +16,7 @@ class MyGame extends Game
   final _greenPaint = Paint()..color = const Color(0xFF00FF00);
   final _redPaint = Paint()..color = const Color(0xFFFF0000);
 
-  Paint _paint;
+  Paint? _paint;
 
   Rect _rect = const Rect.fromLTWH(50, 50, 50, 50);
 
@@ -49,6 +49,6 @@ class MyGame extends Game
 
   @override
   void render(Canvas canvas) {
-    canvas.drawRect(_rect, _paint);
+    if (_paint != null) canvas.drawRect(_rect, _paint!);
   }
 }

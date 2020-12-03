@@ -4,7 +4,7 @@ import 'dart:math';
 /// interval like events.
 class Timer {
   final double limit;
-  void Function() callback;
+  void Function()? callback;
   bool repeat;
   double _current = 0;
   bool _running = false;

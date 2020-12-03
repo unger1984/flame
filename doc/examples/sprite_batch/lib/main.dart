@@ -1,11 +1,11 @@
 import 'dart:math';
 
+import 'package:flame/components/sprite_batch_component.dart';
+import 'package:flame/extensions/vector2.dart';
 import 'package:flame/flame.dart';
-import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
 import 'package:flame/sprite_batch.dart';
-import 'package:flame/extensions/vector2.dart';
-import 'package:flame/components/sprite_batch_component.dart';
+import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +15,7 @@ void main() async {
 }
 
 class MyGame extends BaseGame {
-  SpriteBatch spriteBatch;
+  SpriteBatch? spriteBatch;
 
   MyGame(Vector2 screenSize) {
     size = screenSize;
@@ -26,7 +26,7 @@ class MyGame extends BaseGame {
   void initData() async {
     spriteBatch = await SpriteBatch.withAsset('boom3.png');
 
-    spriteBatch.add(
+    spriteBatch!.add(
       rect: const Rect.fromLTWH(128 * 4.0, 128 * 4.0, 64, 128),
       offset: const Offset(200, 200),
       color: Colors.greenAccent,
@@ -35,7 +35,7 @@ class MyGame extends BaseGame {
       anchor: const Offset(64, 64),
     );
 
-    spriteBatch.addTransform(
+    spriteBatch!.addTransform(
       rect: const Rect.fromLTWH(128 * 4.0, 128 * 4.0, 64, 128),
       color: Colors.redAccent,
     );
@@ -47,14 +47,14 @@ class MyGame extends BaseGame {
       final sy = r.nextInt(8) * 128.0;
       final x = r.nextInt(size.x.toInt()).toDouble();
       final y = r.nextInt(size.y ~/ 2).toDouble() + size.y / 2.0;
-      spriteBatch.add(
+      spriteBatch!.add(
         rect: Rect.fromLTWH(sx, sy, 128, 128),
         offset: Offset(x - 64, y - 64),
       );
     }
 
     add(SpriteBatchComponent.fromSpriteBatch(
-      spriteBatch,
+      spriteBatch!,
       blendMode: BlendMode.srcOver,
     ));
   }

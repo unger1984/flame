@@ -1,7 +1,5 @@
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
-
 import 'extensions/vector2.dart';
 import 'flame.dart';
 
@@ -30,9 +28,9 @@ class SpriteBatch {
   Vector2 get size => Vector2Extension.fromInts(width, height);
 
   void addTransform({
-    @required Rect rect,
-    RSTransform transform,
-    Color color,
+    required Rect rect,
+    RSTransform? transform,
+    Color? color,
   }) {
     rects.add(rect);
     transforms.add(transform ?? defaultTransform);
@@ -40,12 +38,12 @@ class SpriteBatch {
   }
 
   void add({
-    @required Rect rect,
+    required Rect rect,
     double scale = 1.0,
     Offset anchor = Offset.zero,
     double rotation = 0,
     Offset offset = Offset.zero,
-    Color color,
+    Color? color,
   }) {
     final transform = RSTransform.fromComponents(
       scale: scale,
