@@ -5,9 +5,9 @@ import 'component.dart';
 
 class SpriteBatchComponent extends Component {
   final SpriteBatch spriteBatch;
-  BlendMode blendMode;
-  Rect cullRect;
-  Paint paint;
+  BlendMode? blendMode;
+  Rect? cullRect;
+  Paint? paint;
 
   SpriteBatchComponent.fromSpriteBatch(
     this.spriteBatch, {

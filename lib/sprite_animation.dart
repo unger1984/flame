@@ -38,7 +38,7 @@ class SpriteAnimation {
   bool loop = true;
 
   /// Registered method to be triggered when the animation complete.
-  OnCompleteSpriteAnimation onComplete;
+  OnCompleteSpriteAnimation? onComplete;
 
   /// Creates an animation given a list of frames.
   SpriteAnimation(this.frames, {this.loop = true});
@@ -51,9 +51,9 @@ class SpriteAnimation {
   /// All frames have the same [stepTime].
   SpriteAnimation.spriteList(
     List<Sprite> sprites, {
-    @required double stepTime,
+    required double stepTime,
     this.loop = true,
-  }) : assert(stepTime != null) {
+  }) {
     if (sprites.isEmpty) {
       throw Exception('You must have at least one frame!');
     }
@@ -78,9 +78,9 @@ class SpriteAnimation {
   SpriteAnimation.sequenced(
     Image image,
     int amount, {
-    int amountPerRow,
-    Vector2 texturePosition,
-    Vector2 textureSize,
+    int? amountPerRow,
+    Vector2? texturePosition,
+    required Vector2 textureSize,
     double stepTime = 0.1,
     bool loop = true,
   }) : this.variableSequenced(
@@ -98,28 +98,25 @@ class SpriteAnimation {
     Image image,
     int amount,
     List<double> stepTimes, {
-    int amountPerRow,
-    Vector2 texturePosition,
-    Vector2 textureSize,
+    int? amountPerRow,
+    Vector2? texturePosition,
+    required Vector2 textureSize,
     this.loop = true,
-  })  : assert(amountPerRow == null || amount >= amountPerRow),
-        assert(stepTimes != null),
-        assert(image != null) {
+  })  : assert(amountPerRow == null || amount >= amountPerRow) {
     amountPerRow ??= amount;
     texturePosition ??= Vector2.zero();
-    frames = List<SpriteAnimationFrame>(amount);
-    for (int i = 0; i < amount; i++) {
+    frames = List<SpriteAnimationFrame>.generate(amount, (index) {
       final position = Vector2(
-        texturePosition.x + (i % amountPerRow) * textureSize.x,
-        texturePosition.y + (i ~/ amountPerRow) * textureSize.y,
+        texturePosition!.x + (index % amountPerRow!) * textureSize.x,
+        texturePosition.y + (index ~/ amountPerRow) * textureSize.y,
       );
       final Sprite sprite = Sprite(
         image,
         srcPosition: position,
         srcSize: textureSize,
       );
-      frames[i] = SpriteAnimationFrame(sprite, stepTimes[i]);
-    }
+      return SpriteAnimationFrame(sprite, stepTimes[index]);
+    });
   }
 
   /// Automatically creates an Animation Object using animation data provided by the json file

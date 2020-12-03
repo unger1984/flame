@@ -22,7 +22,7 @@ class Images {
       image?.loadedImage != null,
       'Tried to access an inexistent entry on cache "$fileName", make sure to use the load method before accessing a file on the cache',
     );
-    return image.loadedImage;
+    return image!.loadedImage!;
   }
 
   Future<List<Image>> loadAll(List<String> fileNames) async {
@@ -33,14 +33,14 @@ class Images {
     if (!_loadedFiles.containsKey(fileName)) {
       _loadedFiles[fileName] = _ImageAssetLoader(_fetchToMemory(fileName));
     }
-    return await _loadedFiles[fileName].retreive();
+    return await _loadedFiles[fileName]!.retreive();
   }
 
   Future<Image> fromBase64(String fileName, String base64) async {
     if (!_loadedFiles.containsKey(fileName)) {
       _loadedFiles[fileName] = _ImageAssetLoader(_fetchFromBase64(base64));
     }
-    return await _loadedFiles[fileName].retreive();
+    return await _loadedFiles[fileName]!.retreive();
   }
 
   Future<Image> _fetchFromBase64(String base64Data) async {
@@ -65,12 +65,12 @@ class Images {
 class _ImageAssetLoader {
   _ImageAssetLoader(this.future);
 
-  Image loadedImage;
+  Image? loadedImage;
   Future<Image> future;
 
   Future<Image> retreive() async {
     loadedImage ??= await future;
 
-    return loadedImage;
+    return loadedImage!;
   }
 }

@@ -1,7 +1,5 @@
 import 'dart:math';
 
-import 'package:meta/meta.dart';
-
 import '../components/position_component.dart';
 import 'effects.dart';
 
@@ -10,11 +8,11 @@ class CombinedEffect extends PositionComponentEffect {
   final double offset;
 
   CombinedEffect({
-    @required this.effects,
+    required this.effects,
     this.offset = 0.0,
     bool isInfinite = false,
     bool isAlternating = false,
-    void Function() onComplete,
+    void Function()? onComplete,
   }) : super(isInfinite, isAlternating, onComplete: onComplete) {
     assert(
       effects.every((effect) => effect.component == null),
@@ -40,8 +38,8 @@ class CombinedEffect extends PositionComponentEffect {
           effect.originalAngle != effect.endAngle ? effect.endAngle : endAngle;
       endSize =
           effect.originalSize != effect.endSize ? effect.endSize : endSize;
-      peakTime = max(peakTime ?? 0,
-          effect.iterationTime + offset * effects.indexOf(effect));
+      peakTime = max(
+          peakTime, effect.iterationTime + offset * effects.indexOf(effect));
     });
     if (isAlternating) {
       endPosition = originalPosition;
@@ -66,7 +64,7 @@ class CombinedEffect extends PositionComponentEffect {
     super.reset();
     effects.forEach((effect) => effect.reset());
     if (component != null) {
-      initialize(component);
+      initialize(component!);
     }
   }
 

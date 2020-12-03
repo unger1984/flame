@@ -14,12 +14,12 @@ import 'position_component.dart';
 /// This a commonly used subclass of [Component].
 class SpriteComponent extends PositionComponent {
   /// The [sprite] to be rendered by this component.
-  Sprite sprite;
+  Sprite? sprite;
 
   /// Use this to override the colour used (to apply tint or opacity).
   ///
   /// If not provided the default is full white (no tint).
-  Paint overridePaint;
+  Paint? overridePaint;
 
   SpriteComponent();
 
@@ -34,7 +34,10 @@ class SpriteComponent extends PositionComponent {
   @override
   void render(Canvas canvas) {
     super.render(canvas);
-    sprite.render(
+    if (sprite == null) {
+      return;
+    }
+    sprite!.render(
       canvas,
       size: size,
       overridePaint: overridePaint,

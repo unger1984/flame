@@ -15,9 +15,9 @@ enum JoystickActionAlign { TOP_LEFT, BOTTOM_LEFT, TOP_RIGHT, BOTTOM_RIGHT }
 
 class JoystickAction {
   final int actionId;
-  final Sprite sprite;
-  final Sprite spritePressed;
-  final Sprite spriteBackgroundDirection;
+  final Sprite? sprite;
+  final Sprite? spritePressed;
+  final Sprite? spriteBackgroundDirection;
   final double size;
   final double sizeFactorBackgroundDirection;
   final EdgeInsets margin;
@@ -28,21 +28,21 @@ class JoystickAction {
   final double opacityKnob;
 
   bool isPressed = false;
-  Rect _rectAction;
-  Rect _rectBackgroundDirection;
+  Rect? _rectAction;
+  Rect? _rectBackgroundDirection;
   bool _dragging = false;
-  Sprite _spriteAction;
-  Offset _dragPosition;
-  Paint _paintBackground;
-  Paint _paintAction;
-  Paint _paintActionPressed;
-  JoystickController _joystickController;
-  double _sizeBackgroundDirection;
-  DragEvent _currentDragEvent;
-  double _tileSize;
+  Sprite? _spriteAction;
+  late Offset _dragPosition;
+  Paint? _paintBackground;
+  Paint? _paintAction;
+  Paint? _paintActionPressed;
+  late JoystickController _joystickController;
+  late double _sizeBackgroundDirection;
+  DragEvent? _currentDragEvent;
+  late double _tileSize;
 
   JoystickAction({
-    @required this.actionId,
+    required this.actionId,
     this.sprite,
     this.spritePressed,
     this.spriteBackgroundDirection,
@@ -109,52 +109,52 @@ class JoystickAction {
         ..style = PaintingStyle.fill;
     }
 
-    _dragPosition = _rectAction.center;
+    _dragPosition = _rectAction!.center;
   }
 
   void render(Canvas c) {
     if (_rectBackgroundDirection != null && _dragging && enableDirection) {
       if (spriteBackgroundDirection == null) {
-        final double radiusBackground = _rectBackgroundDirection.width / 2;
+        final double radiusBackground = _rectBackgroundDirection!.width / 2;
         c.drawCircle(
           Offset(
-            _rectBackgroundDirection.left + radiusBackground,
-            _rectBackgroundDirection.top + radiusBackground,
+            _rectBackgroundDirection!.left + radiusBackground,
+            _rectBackgroundDirection!.top + radiusBackground,
           ),
           radiusBackground,
-          _paintBackground,
+          _paintBackground!,
         );
       } else {
-        spriteBackgroundDirection.renderRect(c, _rectBackgroundDirection);
+        spriteBackgroundDirection!.renderRect(c, _rectBackgroundDirection!);
       }
     }
 
-    if (_spriteAction != null) {
-      if (_rectAction != null) {
-        _spriteAction.renderRect(c, _rectAction);
+    if (_rectAction != null) {
+      if (_spriteAction != null) {
+        _spriteAction!.renderRect(c, _rectAction!);
+      } else {
+        final double radiusAction = _rectAction!.width / 2;
+        c.drawCircle(
+          Offset(
+            _rectAction!.left + radiusAction,
+            _rectAction!.top + radiusAction,
+          ),
+          radiusAction,
+          isPressed ? _paintActionPressed! : _paintAction!,
+        );
       }
-    } else {
-      final double radiusAction = _rectAction.width / 2;
-      c.drawCircle(
-        Offset(
-          _rectAction.left + radiusAction,
-          _rectAction.top + radiusAction,
-        ),
-        radiusAction,
-        isPressed ? _paintActionPressed : _paintAction,
-      );
     }
   }
 
   void update(double dt) {
-    if (_dragging) {
+    if (_rectBackgroundDirection != null && _dragging) {
       final double _radAngle = atan2(
-        _dragPosition.dy - _rectBackgroundDirection.center.dy,
-        _dragPosition.dx - _rectBackgroundDirection.center.dx,
+        _dragPosition.dy - _rectBackgroundDirection!.center.dy,
+        _dragPosition.dx - _rectBackgroundDirection!.center.dx,
       );
 
       // Distance between the center of joystick background & drag position
-      final centerPosition = _rectBackgroundDirection.center.toVector2();
+      final centerPosition = _rectBackgroundDirection!.center.toVector2();
       final dragPosition = _dragPosition.toVector2();
       double dist = centerPosition.distanceTo(dragPosition);
 
@@ -168,13 +168,15 @@ class JoystickAction {
       final double nextY = dist * sin(_radAngle);
       final Offset nextPoint = Offset(nextX, nextY);
 
-      final Offset diff = Offset(
-            _rectBackgroundDirection.center.dx + nextPoint.dx,
-            _rectBackgroundDirection.center.dy + nextPoint.dy,
-          ) -
-          _rectAction.center;
+      if (_rectAction != null) {
+        final Offset diff = Offset(
+              _rectBackgroundDirection!.center.dx + nextPoint.dx,
+              _rectBackgroundDirection!.center.dy + nextPoint.dy,
+            ) -
+            _rectAction!.center;
 
-      _rectAction = _rectAction.shift(diff);
+        _rectAction = _rectAction!.shift(diff);
+      }
 
       final double _intensity = dist / _tileSize;
 
@@ -188,8 +190,8 @@ class JoystickAction {
       );
     } else {
       if (_rectAction != null) {
-        final Offset diff = _dragPosition - _rectAction.center;
-        _rectAction = _rectAction.shift(diff);
+        final Offset diff = _dragPosition - _rectAction!.center;
+        _rectAction = _rectAction!.shift(diff);
       }
     }
   }
@@ -208,7 +210,7 @@ class JoystickAction {
       );
       tapDown();
       _currentDragEvent = event;
-      _currentDragEvent
+      _currentDragEvent!
         ..onUpdate = onPanUpdate
         ..onEnd = onPanEnd
         ..onCancel = onPanCancel;
@@ -236,7 +238,7 @@ class JoystickAction {
   void onPanEnd(DragEndDetails p1) {
     _currentDragEvent = null;
     _dragging = false;
-    _dragPosition = _rectBackgroundDirection.center;
+    _dragPosition = _rectBackgroundDirection!.center;
     _joystickController.joystickAction(
       JoystickActionEvent(
         id: actionId,
@@ -249,7 +251,7 @@ class JoystickAction {
   void onPanCancel() {
     _currentDragEvent = null;
     _dragging = false;
-    _dragPosition = _rectBackgroundDirection.center;
+    _dragPosition = _rectBackgroundDirection!.center;
     _joystickController.joystickAction(
       JoystickActionEvent(
         id: actionId,

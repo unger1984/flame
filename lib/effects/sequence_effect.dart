@@ -1,20 +1,18 @@
-import 'package:meta/meta.dart';
-
 import '../components/position_component.dart';
 import 'effects.dart';
 
 class SequenceEffect extends PositionComponentEffect {
   final List<PositionComponentEffect> effects;
-  int _currentIndex;
-  PositionComponentEffect currentEffect;
-  bool _currentWasAlternating;
-  double _driftModifier;
+  late int _currentIndex;
+  late PositionComponentEffect currentEffect;
+  late bool _currentWasAlternating;
+  late double _driftModifier;
 
   SequenceEffect({
-    @required this.effects,
+    required this.effects,
     bool isInfinite = false,
     bool isAlternating = false,
-    void Function() onComplete,
+    void Function()? onComplete,
   }) : super(isInfinite, isAlternating, onComplete: onComplete) {
     assert(
       effects.every((effect) => effect.component == null),
@@ -96,7 +94,7 @@ class SequenceEffect extends PositionComponentEffect {
     super.reset();
     effects.forEach((e) => e.reset());
     if (component != null) {
-      initialize(component);
+      initialize(component!);
     }
   }
 }

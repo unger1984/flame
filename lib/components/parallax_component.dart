@@ -36,13 +36,13 @@ class ParallaxImage {
 /// manner specified by the parallaxImage
 class ParallaxLayer {
   final ParallaxImage parallaxImage;
-  Future<Image> future;
+  late Future<Image> future;
 
-  Image _image;
-  Rect _paintArea;
-  Vector2 _screenSize;
-  Vector2 _scroll;
-  Vector2 _imageSize;
+  Image? _image;
+  Rect? _paintArea;
+  Vector2? _screenSize;
+  Vector2? _scroll;
+  Vector2? _imageSize;
   double _scale = 1.0;
 
   ParallaxLayer(this.parallaxImage) {
@@ -51,7 +51,7 @@ class ParallaxLayer {
 
   bool loaded() => _image != null;
 
-  Vector2 currentOffset() => _scroll;
+  Vector2 currentOffset() => _scroll!;
 
   void resize(Vector2 size) {
     if (!loaded()) {
@@ -62,9 +62,9 @@ class ParallaxLayer {
     double scale(LayerFill fill) {
       switch (fill) {
         case LayerFill.height:
-          return _image.height / size.y;
+          return _image!.height / size.y;
         case LayerFill.width:
-          return _image.width / size.x;
+          return _image!.width / size.x;
         default:
           return _scale;
       }
@@ -74,15 +74,15 @@ class ParallaxLayer {
 
     // The image size so that it fulfills the LayerFill parameter
     _imageSize =
-        Vector2Extension.fromInts(_image.width, _image.height) / _scale;
+        Vector2Extension.fromInts(_image!.width, _image!.height) / _scale;
 
     // Number of images that can fit on the canvas plus one
     // to have something to scroll to without leaving canvas empty
-    final Vector2 count = Vector2.all(1) + (size.clone()..divide(_imageSize));
+    final Vector2 count = Vector2.all(1) + (size.clone()..divide(_imageSize!));
 
     // Percentage of the image size that will overflow
-    final Vector2 overflow = ((_imageSize.clone()..multiply(count)) - size)
-      ..divide(_imageSize);
+    final Vector2 overflow = ((_imageSize!.clone()..multiply(count)) - size)
+      ..divide(_imageSize!);
 
     // Align image to correct side of the screen
     final alignment = parallaxImage.alignment;
@@ -91,7 +91,7 @@ class ParallaxLayer {
     _scroll ??= Vector2(marginX, marginY);
 
     // Size of the area to paint the images on
-    final Vector2 paintSize = count..multiply(_imageSize);
+    final Vector2 paintSize = count..multiply(_imageSize!);
     _paintArea = paintSize.toRect();
   }
 
@@ -101,27 +101,28 @@ class ParallaxLayer {
     }
 
     // Scale the delta so that images that are larger don't scroll faster
-    _scroll += delta.clone()..divide(_imageSize);
+    _scroll = _scroll! + delta.clone()
+      ..divide(_imageSize!);
     switch (parallaxImage.repeat) {
       case ImageRepeat.repeat:
-        _scroll = Vector2(_scroll.x % 1, _scroll.y % 1);
+        _scroll = Vector2(_scroll!.x % 1, _scroll!.y % 1);
         break;
       case ImageRepeat.repeatX:
-        _scroll = Vector2(_scroll.x % 1, _scroll.y);
+        _scroll = Vector2(_scroll!.x % 1, _scroll!.y);
         break;
       case ImageRepeat.repeatY:
-        _scroll = Vector2(_scroll.x, _scroll.y % 1);
+        _scroll = Vector2(_scroll!.x, _scroll!.y % 1);
         break;
       case ImageRepeat.noRepeat:
         break;
     }
 
-    final Vector2 scrollPosition = _scroll.clone()..multiply(_imageSize);
+    final Vector2 scrollPosition = _scroll!.clone()..multiply(_imageSize!);
     _paintArea = Rect.fromLTWH(
       -scrollPosition.x,
       -scrollPosition.y,
-      _paintArea.width,
-      _paintArea.height,
+      _paintArea!.width,
+      _paintArea!.height,
     );
   }
 
@@ -132,8 +133,8 @@ class ParallaxLayer {
 
     paintImage(
       canvas: canvas,
-      image: _image,
-      rect: _paintArea,
+      image: _image!,
+      rect: _paintArea!,
       repeat: parallaxImage.repeat,
       scale: _scale,
       alignment: parallaxImage.alignment,
@@ -144,9 +145,9 @@ class ParallaxLayer {
     return Flame.images.load(filename).then((image) {
       _image = image;
       if (_screenSize != null) {
-        resize(_screenSize);
+        resize(_screenSize!);
       }
-      return _image;
+      return _image!;
     });
   }
 }
@@ -159,16 +160,17 @@ enum LayerFill { height, width, none }
 class ParallaxComponent extends PositionComponent {
   Vector2 baseSpeed;
   Vector2 layerDelta;
-  List<ParallaxLayer> _layers;
+  final List<ParallaxLayer> _layers;
 
   ParallaxComponent(
     List<ParallaxImage> images, {
-    this.baseSpeed,
-    this.layerDelta,
-  }) {
-    baseSpeed ??= Vector2.zero();
-    layerDelta ??= Vector2.zero();
-    _load(images);
+    Vector2? baseSpeed,
+    Vector2? layerDelta,
+  })  : baseSpeed = baseSpeed ?? Vector2.zero(),
+        layerDelta = layerDelta ?? Vector2.zero(),
+        _layers = images.map((image) => ParallaxLayer(image)).toList() {
+    Future.wait(_layers.map((layer) => layer.future))
+        .then((_) => loaded = true);
   }
 
   /// The base offset of the parallax, can be used in an outer update loop
@@ -203,11 +205,5 @@ class ParallaxComponent extends PositionComponent {
     canvas.save();
     _layers.forEach((layer) => layer.render(canvas));
     canvas.restore();
-  }
-
-  void _load(List<ParallaxImage> images) {
-    _layers = images.map((image) => ParallaxLayer(image)).toList();
-    Future.wait(_layers.map((layer) => layer.future))
-        .then((_) => loaded = true);
   }
 }

@@ -30,18 +30,18 @@ class TextBoxComponent extends PositionComponent with Resizable {
   static final Paint _imagePaint = BasicPalette.white.paint
     ..filterQuality = FilterQuality.high;
 
-  String _text;
-  TextConfig _config;
-  TextBoxConfig _boxConfig;
+  final String _text;
+  final TextConfig _config;
+  final TextBoxConfig _boxConfig;
 
-  List<String> _lines;
+  final List<String> _lines;
   double _maxLineWidth = 0.0;
-  double _lineHeight;
-  int _totalLines;
+  late double _lineHeight;
+  late int _totalLines;
 
   double _lifeTime = 0.0;
-  Image _cache;
-  int _previousChar;
+  Image? _cache;
+  int? _previousChar;
 
   String get text => _text;
 
@@ -51,17 +51,17 @@ class TextBoxComponent extends PositionComponent with Resizable {
 
   TextBoxComponent(
     String text, {
-    TextConfig config,
-    TextBoxConfig boxConfig,
-  }) {
-    _boxConfig = boxConfig ?? TextBoxConfig();
-    _config = config ?? TextConfig();
-    _text = text;
-    _lines = [];
+    TextConfig? config,
+    TextBoxConfig? boxConfig,
+  })  : _boxConfig = boxConfig ?? TextBoxConfig(),
+        _config = config ?? TextConfig(),
+        _text = text,
+        _lines = [] {
+    double? lineHeight;
     text.split(' ').forEach((word) {
       final possibleLine = _lines.isEmpty ? word : _lines.last + ' ' + word;
-      final painter = config.toTextPainter(possibleLine);
-      _lineHeight ??= painter.height;
+      final painter = _config.toTextPainter(possibleLine);
+      lineHeight ??= painter.height;
       if (painter.width <=
           _boxConfig.maxWidth - _boxConfig.margins.horizontal) {
         if (_lines.isNotEmpty) {
@@ -72,10 +72,11 @@ class TextBoxComponent extends PositionComponent with Resizable {
         _updateMaxWidth(painter.width);
       } else {
         _lines.add(word);
-        _updateMaxWidth(config.toTextPainter(word).width);
+        _updateMaxWidth(_config.toTextPainter(word).width);
       }
     });
     _totalLines = _lines.length;
+    _lineHeight = lineHeight ?? 0.0;
   }
 
   void _updateMaxWidth(double w) {
@@ -113,12 +114,12 @@ class TextBoxComponent extends PositionComponent with Resizable {
         .width;
   }
 
-  double _cachedWidth;
+  double? _cachedWidth;
 
   @override
   double get width {
     if (_cachedWidth != null) {
-      return _cachedWidth;
+      return _cachedWidth!;
     }
     if (_boxConfig.growingBox) {
       int i = 0;
@@ -136,7 +137,7 @@ class TextBoxComponent extends PositionComponent with Resizable {
     } else {
       _cachedWidth = _boxConfig.maxWidth + _boxConfig.margins.horizontal;
     }
-    return _cachedWidth;
+    return _cachedWidth!;
   }
 
   @override
@@ -154,7 +155,7 @@ class TextBoxComponent extends PositionComponent with Resizable {
       return;
     }
     super.render(c);
-    c.drawImage(_cache, Offset.zero, _imagePaint);
+    c.drawImage(_cache!, Offset.zero, _imagePaint);
   }
 
   Future<Image> _redrawCache() {
