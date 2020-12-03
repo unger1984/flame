@@ -101,7 +101,8 @@ class MyGame extends BaseGame {
       final particle = particles.removeLast();
       final double col = particles.length % gridSize;
       final double row = (particles.length ~/ gridSize).toDouble();
-      final cellCenter = (cellSize!.clone()..multiply(Vector2(col, row))) + (cellSize! * .5);
+      final cellCenter =
+          (cellSize!.clone()..multiply(Vector2(col, row))) + (cellSize! * .5);
 
       add(
         // Bind all the particles to a [Component] update
@@ -254,7 +255,8 @@ class MyGame extends BaseGame {
       lifespan: 2,
       renderer: (canvas, particle) {
         const steps = 5;
-        final steppedProgress = steppedTween.transform(particle.progress ?? 0) / steps;
+        final steppedProgress =
+            steppedTween.transform(particle.progress ?? 0) / steps;
 
         canvas.drawCircle(
           Offset.zero,
@@ -341,7 +343,8 @@ class MyGame extends BaseGame {
     return Particle.generate(
       count: 10,
       generator: (i) => AcceleratedParticle(
-        speed: Offset(rnd.nextDouble() * 600 - 300, -rnd.nextDouble() * 600) * .2,
+        speed:
+            Offset(rnd.nextDouble() * 600 - 300, -rnd.nextDouble() * 600) * .2,
         acceleration: const Offset(0, 200),
         child: rotatingImage(initialAngle: rnd.nextDouble() * pi),
       ),
@@ -448,7 +451,9 @@ class MyGame extends BaseGame {
               Offset.zero,
               // Closer to the end of lifespan particles
               // will turn into larger glaring circles
-              rnd.nextDouble() * (particle.progress ?? 0) > .6 ? rnd.nextDouble() * (50 * (particle.progress ?? 0)) : 2 + (3 * (particle.progress ?? 0)),
+              rnd.nextDouble() * (particle.progress ?? 0) > .6
+                  ? rnd.nextDouble() * (50 * (particle.progress ?? 0))
+                  : 2 + (3 * (particle.progress ?? 0)),
               paint,
             );
           }),
@@ -474,7 +479,20 @@ class MyGame extends BaseGame {
     final cellSizeOffset = cellSize!.toOffset();
     final halfCellSizeOffset = halfCellSize!.toOffset();
 
-    return ComposedParticle(children: <Particle>[rect.rotating(to: pi / 2).moving(to: -cellSizeOffset).scaled(2).accelerated(acceleration: halfCellSizeOffset * 5).translated(halfCellSizeOffset), rect.rotating(to: -pi).moving(to: cellSizeOffset.scale(1, -1)).scaled(2).translated(halfCellSizeOffset.scale(-1, 1)).accelerated(acceleration: halfCellSizeOffset.scale(-5, 5))]);
+    return ComposedParticle(children: <Particle>[
+      rect
+          .rotating(to: pi / 2)
+          .moving(to: -cellSizeOffset)
+          .scaled(2)
+          .accelerated(acceleration: halfCellSizeOffset * 5)
+          .translated(halfCellSizeOffset),
+      rect
+          .rotating(to: -pi)
+          .moving(to: cellSizeOffset.scale(1, -1))
+          .scaled(2)
+          .translated(halfCellSizeOffset.scale(-1, 1))
+          .accelerated(acceleration: halfCellSizeOffset.scale(-5, 5))
+    ]);
   }
 
   @override
@@ -485,7 +503,8 @@ class MyGame extends BaseGame {
     super.render(canvas);
 
     if (debugMode()) {
-      fpsTextConfig.render(canvas, '${fps(120).toStringAsFixed(2)}fps', Vector2(0, size.y - 24));
+      fpsTextConfig.render(
+          canvas, '${fps(120).toStringAsFixed(2)}fps', Vector2(0, size.y - 24));
     }
   }
 
