@@ -2,14 +2,6 @@
 
 Some stuff just doesn't fit anywhere else.
 
-## Position
-
-Throughout the variety of modules needed to build a game, Dart and Flutter have a few different classes to handle the concept of a 2D double point; specially common in the APIs are math.Point and ui.Offset.
-
-The Position class is an utility class that helps by allowing easy conversions to and from these type.
-
-It also differs from the default implementations provided (math.Point and ui.Offset) as it's mutable and offers some useful methods for manipulation.
-
 ## Util Class
 
 This class, accessible via `Flame.util`, has some sparse functions that are independent and good to have.
@@ -45,8 +37,7 @@ These two functions help with registering (and de-registering) gesture recognize
 
 ### Other functions
 
-* `text`: discussed [here](/doc/text.md)
-* `drawWhere`: a very simple function that manually applies an offset to the `Canvas`, render stuff given via a function and then reset the `Canvas`, without using the `Canvas`' built-in `save`/`restore` functionality. This might be useful because `BaseGame` uses the state of the canvas, and you should not mess with it.
+* `renderWhereAt` and `renderRotated`: if you are directly rendering to the `Canvas`, you can use these functions to easily manipulate coordinates to render things on the correct places. They change the `Canvas` transformation matrix but reset afterwards.
  
 ## Timer
 
@@ -152,3 +143,15 @@ class MyBaseGame extends BaseGame {
   }
 }
 ```
+
+## Extensions
+
+Flame bundles a collection of utility extensions, these extensions are meant to help the developer with shortcuts and converion methods, here you can find the summary of those extensions
+
+They can all be imported on `package:flame/extensions/...`
+
+### Canvas
+
+Methods:
+ - `scaleVector`: Just like `canvas scale` method, but takes a `Vector2` as an argument.
+ - `translateVector`: Just like `canvas translate` method, but takes a `Vector2` as an argument.

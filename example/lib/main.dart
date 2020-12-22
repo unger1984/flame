@@ -11,9 +11,11 @@ import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  final game = MyGame();
-
-  runApp(game.widget);
+  runApp(
+    GameWidget(
+      game: MyGame(),
+    ),
+  );
 }
 
 class Palette {
@@ -46,6 +48,7 @@ class Square extends PositionComponent with HasGameRef<MyGame> {
 
   @override
   void onMount() {
+    super.onMount();
     size = Vector2.all(gameRef.squareSize);
     anchor = Anchor.center;
   }

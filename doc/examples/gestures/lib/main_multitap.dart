@@ -1,15 +1,18 @@
-import 'package:flutter/material.dart';
 import 'package:flame/game.dart';
+import 'package:flutter/material.dart';
 import 'package:flame/gestures.dart';
 import 'package:flame/palette.dart';
 
 void main() {
-  final game = MyGame();
-  runApp(game.widget);
+  runApp(
+    GameWidget(
+      game: MyGame(),
+    ),
+  );
 }
 
 /// Includes an example including advanced detectors
-class MyGame extends Game with MultiTouchTapDetector {
+class MyGame extends BaseGame with MultiTouchTapDetector {
   final _whitePaint = BasicPalette.white.paint;
 
   Paint _paint;
@@ -41,10 +44,8 @@ class MyGame extends Game with MultiTouchTapDetector {
   }
 
   @override
-  void update(double dt) {}
-
-  @override
   void render(Canvas canvas) {
+    super.render(canvas);
     _taps.values.forEach((rect) {
       canvas.drawRect(rect, _paint);
     });

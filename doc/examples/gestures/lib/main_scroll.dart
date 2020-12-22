@@ -7,10 +7,14 @@ import 'package:flame/extensions/offset.dart';
 
 void main() {
   final game = MyGame();
-  runApp(game.widget);
+  runApp(
+    GameWidget(
+      game: game,
+    ),
+  );
 }
 
-class MyGame extends Game with ScrollDetector {
+class MyGame extends BaseGame with ScrollDetector {
   static const SPEED = 200;
 
   Vector2 position = Vector2(0, 0);
@@ -23,6 +27,7 @@ class MyGame extends Game with ScrollDetector {
 
   @override
   void render(Canvas canvas) {
+    super.render(canvas);
     canvas.drawRect(
       Rect.fromLTWH(
         position.x,
@@ -36,6 +41,7 @@ class MyGame extends Game with ScrollDetector {
 
   @override
   void update(double dt) {
+    super.update(dt);
     if (target != null) {
       final dir = (target - position).normalized();
       position += dir * (SPEED * dt);
